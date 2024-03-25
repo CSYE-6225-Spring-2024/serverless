@@ -36,7 +36,7 @@ async function createToken(userDetails) {
 }
 
 async function sendEmail(token, username) {
-  const verificationLink = `https://safehubnest.me:8080/v1/user/verify?token=${token}`;
+  const verificationLink = `http://safehubnest.me:8080/v1/user/verify?token=${token}`;
   const DOMAIN = "mailgun.safehubnest.me";
   const mg = mailgun({
     apiKey: "5e2674fcba67855d52d261cfeafb5857-309b0ef4-a134dd2c",
