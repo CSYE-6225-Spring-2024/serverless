@@ -2,7 +2,6 @@ const cloudFunction = require("@google-cloud/functions-framework");
 const mailgun = require("mailgun-js");
 const { Sequelize, DataTypes } = require("sequelize");
 
-
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -63,7 +62,7 @@ cloudFunction.cloudEvent("sendEmail", async (cloudEvent) => {
     }
   } catch (error) {
     var errorLog = { errorLog: error };
-    console.error("Error processing mailgun", errorLog);
+    console.error("Error processing mailgun", JSON.stringify(errorLog));
   }
 });
 
@@ -74,7 +73,7 @@ async function checkDBConnection() {
     return true;
   } catch (error) {
     var errorDBLog = { errorDBLog: error };
-    console.log("Database failed to run", errorDBLog);
+    console.log("Database failed to run", JSON.stringify(errorDBLog));
     return false;
   }
 }
@@ -84,16 +83,16 @@ async function createToken(userDetails) {
   const new_user = await UserVerified.create({
     username: userDetails.username,
   });
-  console.log("User details from DB:", new_user);
+  console.log("User details from DB:", JSON.stringify(new_user));
   return new_user.id;
 }
 
 async function sendEmail(token, username) {
-  const verificationLink = `http://safehubnest.me:8080/v1/user/verify?token=${token}`;
-  const DOMAIN = "mailgun.safehubnest.me";
+  const verificationLink = `http://${process.env.DOMAIN}:8080/v1/user/verify?token=${token}`;
+  const EMAIL_DOMAIN = process.env.EMAIL_DOMAIN;
   const mg = mailgun({
-    apiKey: "5e2674fcba67855d52d261cfeafb5857-309b0ef4-a134dd2c",
-    domain: DOMAIN,
+    apiKey: process.env.MAILGUN_API,
+    domain: EMAIL_DOMAIN,
   });
   const data = {
     from: "Mailgun Sandbox <postmaster@mailgun.safehubnest.me>",
