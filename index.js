@@ -1,8 +1,6 @@
 const cloudFunction = require("@google-cloud/functions-framework");
 const mailgun = require("mailgun-js");
-const jwt = require("jsonwebtoken");
-const { Sequelize } = require("sequelize");
-const { DataTypes } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
