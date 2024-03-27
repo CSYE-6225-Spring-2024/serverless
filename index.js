@@ -43,12 +43,13 @@ const UserVerified = sequelize.define(
   }
 );
 
-cloudFunction.cloudEvent("sendEmail", async (cloudEvent) => {
+cloudFunction.http("sendEmail", async (req, res) => {
   try {
-    const base64name = cloudEvent.data.message.data;
+    const base64name = req.body.message.data;
     const userData = Buffer.from(base64name, "base64").toString();
     if (!userData) {
       console.error("Invalid Pub/Sub message received.");
+      res.status(400).send();
       return;
     }
     const jsonData = JSON.parse(userData);
@@ -58,11 +59,16 @@ cloudFunction.cloudEvent("sendEmail", async (cloudEvent) => {
       const token = await createToken(jsonData);
       if (token) {
         await sendEmail(token, jsonData.username);
+        res.status(200).send();
+        return;
       }
     }
+    res.status(200).send();
   } catch (error) {
     var errorLog = { errorLog: error };
     console.error("Error processing mailgun", JSON.stringify(errorLog));
+    res.status(400).send();
+    return;
   }
 });
 
