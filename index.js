@@ -94,7 +94,7 @@ async function createToken(userDetails) {
 }
 
 async function sendEmail(token, username) {
-  const verificationLink = `http://${process.env.DOMAIN}:8080/v1/user/verify?token=${token}`;
+  const verificationLink = `https://${process.env.DOMAIN}/v1/user/verify?token=${token}`;
   const EMAIL_DOMAIN = process.env.EMAIL_DOMAIN;
   const mg = mailgun({
     apiKey: process.env.MAILGUN_API,
