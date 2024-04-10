@@ -58,7 +58,7 @@ cloudFunction.http("sendEmail", async (req, res) => {
     if (isDBUp) {
       const token = await createToken(jsonData);
       if (token) {
-        await sendEmail(token, jsonData.username);
+        await sendEmail(token, jsonData.username, jsonData.version);
         res.status(200).send();
         return;
       }
@@ -93,8 +93,8 @@ async function createToken(userDetails) {
   return new_user.id;
 }
 
-async function sendEmail(token, username) {
-  const verificationLink = `https://${process.env.DOMAIN}/v1/user/verify?token=${token}`;
+async function sendEmail(token, username, version) {
+  const verificationLink = `https://${process.env.DOMAIN}/${version}/user/verify?token=${token}`;
   const EMAIL_DOMAIN = process.env.EMAIL_DOMAIN;
   const mg = mailgun({
     apiKey: process.env.MAILGUN_API,
